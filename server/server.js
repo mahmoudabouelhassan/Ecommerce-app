@@ -17,6 +17,36 @@ app.use(
     credentials: true,
   }),
 );
+
+// Reuse the connection across requests in the same serverless instance.
+// Concurrent requests share the same connection attempt, and failures can be retried.
+let connectionPromise;
+
+const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) return;
+
+  if (!connectionPromise) {
+    connectionPromise = mongoose.connect(process.env.MONGODB_URI)
+      .then(() => console.log("MongoDB Connected ..."))
+      .finally(() => {
+        connectionPromise = null;
+      });
+  }
+
+  await connectionPromise;
+};
+
+// Connect before any route, including the Stripe webhook, accesses MongoDB.
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("Database connection failed:", err);
+    res.status(500).json({ message: "Database connection failed" });
+  }
+});
+
 //  جديد ومهم جداً: الـ webhook route لازم يتسجل هنا، قبل app.use(express.json())
 // السبب: Stripe بيتحقق من توقيع الطلب باستخدام الـ raw body (البيانات الخام
 // قبل أي تحويل)، لكن express.json() بيحول أي body وارد لـ JaScript object
@@ -37,34 +67,6 @@ app.use("/api/user", userRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "API is runnig" });
-});
-//  جديد: بنخزّن حالة الاتصال عشان منكررش الاتصال بقاعدة البيانات في كل استدعاء
-// مهم جدًا في بيئة Serverless لأن كل request ممكن يشغّل نسخة جديدة من الكود
-let isConnected = false;
-
-// const PORT = process.env.PORT || 500;
-// mongoose
-//   .connect(process.env.MONGODB_URI)
-//   .then(() => {
-//     console.log("MongoDB Connected ... ");
-//     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-//   })
-//   .catch((err) => console.log(err));
-const connectDB = async () => {
-  if (isConnected) return; // لو متصل بالفعل، منعملش حاجة
-  await mongoose.connect(process.env.MONGODB_URI);
-  isConnected = true;
-  console.log("MongoDB Connected ...");
-};
-
-//  جديد: middleware بسيط بيتأكد من الاتصال بقاعدة البيانات قبل أي request
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (err) {
-    res.status(500).json({ message: "Database connection failed" });
-  }
 });
 
 //  تعديل: app.listen بيشتغل بس وقت التطوير المحلي (مش على Vercel)
