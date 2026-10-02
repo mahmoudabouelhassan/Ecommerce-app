@@ -10,6 +10,9 @@ import { addToCart } from "../features/cart/cartSlice";
 import { toggleWishlist } from "../features/wishlist/wishlistSlice";
 import { showLoginRequiredAlert } from "../utils/authAlert";
 import ProductGrid from "../components/ProductGrid/ProductGrid";
+import { productPlaceholder, useProductImageFallback } from "../utils/productImage";
+import { badgeClassName, badgeStyle } from "../utils/productBadge";
+import ProductPrice from "../components/ProductPrice";
 
 function ProductDetails() {
   const { id } = useParams();
@@ -27,6 +30,7 @@ function ProductDetails() {
   const { data: relatedProducts = [] } = useGetRelatedProductsQuery(id, {
     skip: !product,
   });
+  const gallery = product?.images?.length ? product.images : product?.image ? [product.image] : [productPlaceholder];
 
   if (isLoading)
     return (
@@ -44,7 +48,7 @@ function ProductDetails() {
 
   const isFavorite = favoriteItems.some((item) => item.id === product?.id);
 
-  const roundedRating = Math.round(product.rating || 4);
+  const roundedRating = Math.round(product.rating ?? 0);
   ///////////////////////
   const itemInCart = cartItems.find((item) => item.id === product?.id);
   const cartQty = itemInCart?.quantity || 0;
@@ -78,15 +82,15 @@ function ProductDetails() {
           {/*  Main image */}
           <div className="relative aspect-4/5 w-full rounded-3xl overflow-hidden bg-[#F3F4F6]">
             <img
-              src={product.images[selectedImage]}
+              src={gallery[Math.min(selectedImage, gallery.length - 1)]}
+              onError={useProductImageFallback}
               alt={product.title}
               className="w-full h-full object-cover object-center transition-all duration-500"
             />
-            {isOutOfStock && ( // ✅ جديد: badge فوق الصورة
-              <div className="absolute top-4 left-4 bg-gray-900/80 text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                Out of Stock
-              </div>
-            )}
+            {(product.badge || isOutOfStock) && <div className="absolute top-4 right-16 left-4 flex flex-col items-start gap-2">
+              {product.badge && <span className={badgeClassName(product.badgeColor)} style={badgeStyle(product.badgeColor)}>{product.badge}</span>}
+              {isOutOfStock && <span className="rounded-full bg-gray-900/80 px-3 py-1.5 text-xs font-bold text-white">Out of Stock</span>}
+            </div>}
             {/* fav btn */}
             <button
               onClick={handleToggleFavorite}
@@ -107,7 +111,7 @@ function ProductDetails() {
 
           {/*  Thumbnails */}
           <div className="flex gap-3">
-            {product.images.map((img, index) => (
+            {gallery.map((img, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedImage(index)}
@@ -119,6 +123,7 @@ function ProductDetails() {
               >
                 <img
                   src={img}
+                  onError={useProductImageFallback}
                   alt={`thumbnail ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
@@ -162,14 +167,12 @@ function ProductDetails() {
               style={{ color: "var(--text-secondary)" }}
               className="text-sm font-semibold "
             >
-              ({product.stock * 2 - 8 || 42} reviews)
+              {product.rating > 0 ? `${Number(product.rating).toFixed(1)} / 5` : "Not rated yet"}
             </span>
           </div>
 
           {/* price */}
-          <p className="text-4xl font-bold text-[#2563EB] font-sans">
-            ${product.price?.toFixed(2)}
-          </p>
+          <ProductPrice product={product} size="lg" className="font-sans" />
 
           {/* discription */}
           <p

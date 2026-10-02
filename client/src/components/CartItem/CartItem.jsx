@@ -1,4 +1,6 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
+import { getProductImage, useProductImageFallback } from "../../utils/productImage";
+import ProductPrice from "../ProductPrice";
 
 function CartItem({ item, onRemove, onUpdateQuantity }) {
   const isMaxStock = item.stock != null && item.quantity >= item.stock;
@@ -12,7 +14,8 @@ function CartItem({ item, onRemove, onUpdateQuantity }) {
     >
       {/* img */}
       <img
-        src={item.image}
+        src={getProductImage(item)}
+        onError={useProductImageFallback}
         alt={item.title}
         className="w-20 h-20 object-cover rounded-xl shrink-0"
       />
@@ -31,9 +34,7 @@ function CartItem({ item, onRemove, onUpdateQuantity }) {
         >
           {item.category} Edition
         </p>
-        <p className="text-blue-600 font-bold text-lg mt-1">
-          ${(item.price * item.quantity).toFixed(2)}
-        </p>
+        <ProductPrice product={item} quantity={item.quantity} size="sm" showPercent={false} className="mt-1" />
         {isMaxStock && ( //  جديد: رسالة توضيحية لما توصل للحد الأقصى
           <p className="text-xs text-amber-500 font-medium mt-1">
             Max stock reached

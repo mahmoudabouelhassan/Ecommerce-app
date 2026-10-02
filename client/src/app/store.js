@@ -6,6 +6,7 @@ import wishlistReducer from "../features/wishlist/wishlistSlice";
 import { productsApiSlice } from "../features/products/productsApiSlice";
 import authReducer from "../features/auth/authSlice";
 import authApiSlice from "../features/auth/authApiSlice";
+import { setupListeners } from "@reduxjs/toolkit/query";
 
 // في store.js بدل import storage
 const storage = {
@@ -37,6 +38,7 @@ const store = configureStore({
       .concat(productsApiSlice.middleware)
       .concat(authApiSlice.middleware),
 });
+setupListeners(store.dispatch);
 export const persistor = persistStore(store);
 export default store;
 

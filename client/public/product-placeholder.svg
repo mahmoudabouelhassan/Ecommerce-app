@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 600" role="img" aria-label="Product image unavailable">
+  <rect width="480" height="600" fill="#eef2f7"/>
+  <rect x="103" y="166" width="274" height="268" rx="28" fill="#dbe5f2"/>
+  <path d="M178 207v-19a62 62 0 0 1 124 0v19" fill="none" stroke="#93a9c6" stroke-linecap="round" stroke-width="18"/>
+  <rect x="143" y="207" width="194" height="175" rx="16" fill="#fff"/>
+  <path d="m177 337 44-48 39 37 34-36 27 27" fill="none" stroke="#93a9c6" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+  <circle cx="205" cy="259" r="14" fill="#93a9c6"/>
+  <text x="240" y="472" fill="#62748e" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">No product image</text>
+</svg>

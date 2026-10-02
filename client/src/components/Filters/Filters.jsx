@@ -14,7 +14,7 @@ function Filters({ selectedCategory, onCategoryChange, sortBy, onSortChange }) {
               onClick={() => onCategoryChange(category)}
               className={`px-5 py-2 rounded-full font-medium transition-all duration-300 border`}
               style={
-                selectedCategory === category
+                selectedCategory.toLowerCase() === category.toLowerCase()
                   ? {
                       background: "#2563EB",
                       color: "#ffffff",

@@ -37,21 +37,21 @@ const useUserSync = () => {
         hasHydrated.current = true;
       }
     })();
-  }, [isAuthenticated]);
+  }, [dispatch, fetchUserData, isAuthenticated]);
 
   // 2) أي تغيير في الـ cart بعد الـ hydration يتبعت للـ DB (مع debounce)
   useEffect(() => {
     if (!isAuthenticated || !hasHydrated.current) return;
     const timeout = setTimeout(() => updateCart(cartItems), 600);
     return () => clearTimeout(timeout);
-  }, [cartItems, isAuthenticated]);
+  }, [cartItems, isAuthenticated, updateCart]);
 
   // 3) نفس الحكاية للـ wishlist
   useEffect(() => {
     if (!isAuthenticated || !hasHydrated.current) return;
     const timeout = setTimeout(() => updateWishlist(wishlistItems), 600);
     return () => clearTimeout(timeout);
-  }, [wishlistItems, isAuthenticated]);
+  }, [wishlistItems, isAuthenticated, updateWishlist]);
 };
 
 export default useUserSync;

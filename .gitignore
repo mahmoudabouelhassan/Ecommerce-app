@@ -11,3 +11,5 @@ dist-ssr/
 Thumbs.db
 .vercel
 coverage/
+.tools/
+tests/load/results/

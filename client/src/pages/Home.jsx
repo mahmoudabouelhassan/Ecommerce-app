@@ -7,6 +7,9 @@ import {
   useGetProductsQuery,
   useGetCategoriesWithImageQuery,
 } from "../features/products/productsApiSlice";
+import { getProductImage, useProductImageFallback } from "../utils/productImage";
+import { badgeClassName, badgeStyle } from "../utils/productBadge";
+import ProductPrice from "../components/ProductPrice";
 
 function Home() {
   const navigate = useNavigate();
@@ -36,15 +39,14 @@ function Home() {
               <div
                 onClick={() => navigate(`/product/${product.id}`)}
                 className="cursor-pointer w-full h-full bg-cover bg-center flex items-center"
-                style={{ backgroundImage: `url(${product.image})` }}
+                style={{ backgroundImage: `url("${getProductImage(product)}")` }}
               >
-                <div className="bg-black/40 w-full h-full flex flex-col justify-center items-center text-center px-4">
+                <div className="relative bg-black/40 w-full h-full flex flex-col justify-center items-center text-center px-4">
+                  {product.badge && <span className={`absolute top-5 left-5 ${badgeClassName(product.badgeColor)}`} style={badgeStyle(product.badgeColor)}>{product.badge}</span>}
                   <h1 className="text-white text-3xl md:text-5xl font-bold mb-3">
                     {product.title}
                   </h1>
-                  <p className="text-white text-lg md:text-xl">
-                    ${product.price?.toFixed(2)}
-                  </p>
+                  <ProductPrice product={product} size="md" onDark className="justify-center" />
                 </div>
               </div>
             </SwiperSlide>
@@ -68,12 +70,13 @@ function Home() {
             {categories.map((category) => (
               <div
                 key={category.name}
-                onClick={() => navigate(`/products?category=${category.name}`)}
+                onClick={() => navigate(`/products?category=${encodeURIComponent(category.name)}`)}
                 className="cursor-pointer rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 duration-300"
               >
                 <div className="relative aspect-square w-full overflow-hidden">
                   <img
-                    src={category.image}
+                    src={category.image || getProductImage(null)}
+                    onError={useProductImageFallback}
                     alt={category.name}
                     className="w-full h-full object-cover"
                   />

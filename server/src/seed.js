@@ -1086,24 +1086,32 @@ const products = [
 ];
 
 // ============================================
-// دالة الـ seeding (زي ما هي، من غير تغيير في المنطق)
+// Add missing demo products only. Never replace products managed by an admin.
 // ============================================
 const seedDB = async () => {
   try {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("Seeding is disabled in production. Use the admin dashboard to manage products.");
+    }
+    if (!process.env.MONGODB_URI) throw new Error("MONGODB_URI is required");
+    const confirmedDatabase = process.argv.find((arg) => arg.startsWith("--confirm-db="))?.slice("--confirm-db=".length);
+    if (!confirmedDatabase) throw new Error("Pass --confirm-db=DATABASE_NAME to seed the intended non-production database.");
     await mongoose.connect(process.env.MONGODB_URI);
+    if (mongoose.connection.name !== confirmedDatabase) throw new Error(`Connected database is ${mongoose.connection.name}, not ${confirmedDatabase}; no products changed.`);
     console.log("MongoDB Connected");
-
-    await Product.deleteMany({});
-    console.log("Old products deleted");
-
-    await Product.insertMany(products);
-    console.log(`${products.length} products seeded successfully`);
-
-    mongoose.connection.close();
-    console.log("Database connection closed");
+    const result = await Product.bulkWrite(products.map((product) => ({
+      updateOne: {
+        filter: { title: product.title, category: product.category },
+        update: { $setOnInsert: product },
+        upsert: true,
+      },
+    })));
+    console.log(`${result.upsertedCount} missing demo products added; existing products left untouched`);
   } catch (error) {
-    console.log("Seed Error:", error);
-    mongoose.connection.close();
+    console.error("Seed Error:", error);
+    process.exitCode = 1;
+  } finally {
+    await mongoose.disconnect();
   }
 };
 

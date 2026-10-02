@@ -16,7 +16,7 @@ function ForgotPassword() {
     try {
       await forgotPassword(formData.email).unwrap();
       setSubmitted(true); //  بنعرض نفس الرسالة سواء نجح أو حتى لو الإيميل مش موجود
-    } catch (err) {
+    } catch {
       setSubmitted(true); //  حتى لو حصل error، منورّيش اليوزر تفاصيل عشان منكشفش معلومات
     }
   };

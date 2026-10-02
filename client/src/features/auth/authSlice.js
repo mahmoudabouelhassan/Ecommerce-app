@@ -10,7 +10,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      state.user = { name: action.payload.name, email: action.payload.email };
+      state.user = {
+        name: action.payload.name,
+        email: action.payload.email,
+        role: action.payload.role || "customer",
+      };
       state.authChecked = true;
       state.isAuthenticated = true;
     },

@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { Star, Trash2, ShoppingCart } from "lucide-react";
 import { removeFromWishlist } from "../features/wishlist/wishlistSlice";
 import { addToCart } from "../features/cart/cartSlice";
+import { getProductImage, useProductImageFallback } from "../utils/productImage";
+import { badgeClassName, badgeStyle } from "../utils/productBadge";
+import ProductPrice from "../components/ProductPrice";
 
 function Wishlist() {
   const { wishlistItems } = useSelector((state) => state.wishlist);
@@ -100,10 +103,12 @@ function Wishlist() {
                 style={{ background: "var(--bg-card)" }}
               >
                 <img
-                  src={product.image || (product.images && product.images[0])}
+                  src={getProductImage(product)}
+                  onError={useProductImageFallback}
                   alt={product.title}
                   className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                 />
+                {product.badge && <span className={`absolute top-4 left-4 ${badgeClassName(product.badgeColor)}`} style={badgeStyle(product.badgeColor)}>{product.badge}</span>}
 
                 {/* Remove from Wishlist Button */}
                 <button
@@ -173,9 +178,7 @@ function Wishlist() {
                 </p>
               </div>
 
-              <p className="text-2xl font-bold text-blue-600 mt-3 ">
-                ${product.price?.toFixed(2)}
-              </p>
+              <ProductPrice product={product} className="mt-3" />
             </div>
           );
         })}

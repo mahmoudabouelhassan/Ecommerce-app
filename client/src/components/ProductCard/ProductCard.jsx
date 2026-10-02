@@ -7,9 +7,12 @@ import {
   removeFromWishlist,
 } from "../../features/wishlist/wishlistSlice";
 import { showLoginRequiredAlert } from "../../utils/authAlert";
+import { getProductImage, useProductImageFallback } from "../../utils/productImage";
+import { badgeClassName, badgeStyle } from "../../utils/productBadge";
+import ProductPrice from "../ProductPrice";
 
 function ProductCard({ product }) {
-  const roundedRating = Math.round(product.rating || 4);
+  const roundedRating = Math.round(product.rating ?? 0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -56,15 +59,15 @@ function ProductCard({ product }) {
     >
       <div className="relative aspect-4/5 w-full rounded-3xl overflow-hidden bg-[#F3F4F6] transition-all duration-300">
         <img
-          src={product.image}
+          src={getProductImage(product)}
+          onError={useProductImageFallback}
           alt={product.title}
           className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
         />
-        {isOutOfStock && (
-          <div className="absolute top-4 left-4 bg-gray-900/80 text-white text-xs font-bold px-3 py-1.5 rounded-full">
-            Out of Stock
-          </div>
-        )}
+        {(product.badge || isOutOfStock) && <div className="absolute top-4 right-4 left-4 flex flex-col items-start gap-2">
+          {product.badge && <span className={badgeClassName(product.badgeColor)} style={badgeStyle(product.badgeColor)}>{product.badge}</span>}
+          {isOutOfStock && <span className="rounded-full bg-gray-900/80 px-3 py-1.5 text-xs font-bold text-white">Out of Stock</span>}
+        </div>}
         {/* fav icon */}
         <button
           onClick={handleToggleWishlist}
@@ -110,7 +113,7 @@ function ProductCard({ product }) {
             className=" text-sm font-semibold font-sans"
             style={{ color: "var(--text-primary)" }}
           >
-            ({product.stock * 2 - 8 || 42})
+            {product.rating > 0 ? Number(product.rating).toFixed(1) : "Unrated"}
           </span>
         </div>
 
@@ -128,9 +131,7 @@ function ProductCard({ product }) {
           {product.category} Edition
         </p>
         <div className="flex items-center justify-between mt-2">
-          <p className="text-[26px] font-bold text-[#2563EB] mt-2 font-sans">
-            ${product.price?.toFixed(2)}
-          </p>
+          <ProductPrice product={product} className="mt-2 font-sans" />
           {!isOutOfStock && ( // ✅ جديد: عدد الـ stock المتاح
             <span
               style={{ color: "var(--text-secondary)" }}

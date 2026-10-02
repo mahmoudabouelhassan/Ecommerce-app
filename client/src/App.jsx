@@ -17,6 +17,15 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import OrderSuccess from "./pages/OrderSuccess";
 import OrderCancel from "./pages/OrderCancel";
+import BackToTop from "./components/BackToTop";
+import AdminRoute from "./components/AdminRoute";
+import OrderPlaced from "./pages/OrderPlaced";
+import AdminCashOrders from "./pages/AdminCashOrders";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminOverview from "./pages/admin/AdminOverview";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminSettings from "./pages/admin/AdminSettings";
+import AdminTaxonomy from "./pages/admin/AdminTaxonomy";
 
 function App() {
   useAuthCheck();
@@ -33,18 +42,27 @@ function App() {
           <Route index element={<Home />} />
           <Route path="products" element={<Products />} />
           <Route path="product/:id" element={<ProductDetails />} />
-          <Route path="order-success" element={<OrderSuccess />} />{" "}
-          {/* ✅ جديد - برة الـ ProtectedRoute، لأن Stripe هو اللي بيوجه هنا مباشرة */}
-          <Route path="order-cancel" element={<OrderCancel />} />{" "}
-          {/* ✅ جديد */}
+          <Route path="order-success" element={<OrderSuccess />} />
+          <Route path="order-cancel" element={<OrderCancel />} />
           <Route element={<ProtectedRoute />}>
             <Route path="cart" element={<Cart />} />
             <Route path="wishlist" element={<Wishlist />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="order-placed/:orderId" element={<OrderPlaced />} />
+            <Route element={<AdminRoute />}>
+              <Route path="admin" element={<AdminLayout />}>
+                <Route index element={<AdminOverview />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="catalog" element={<AdminTaxonomy />} />
+                <Route path="cash-orders" element={<AdminCashOrders />} />
+                <Route path="settings" element={<AdminSettings />} />
+              </Route>
+            </Route>
           </Route>
         </Route>
       </Routes>
+      <BackToTop />
     </>
   );
 }
