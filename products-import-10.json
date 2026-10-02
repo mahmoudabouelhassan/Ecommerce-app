@@ -1,0 +1,132 @@
+[
+  {
+    "title": "Premium Wireless ANC Headphones2",
+    "price": 49.99,
+    "category": "electronics",
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500",
+    "images": [
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500",
+      "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=500",
+      "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500"
+    ],
+    "description": "Over-ear wireless headphones with active noise cancellation and 30-hour battery life.",
+    "stock": 25
+  },
+  {
+    "title": "Active Lifestyle Smartwatch2",
+    "price": 129.99,
+    "category": "electronics",
+    "image": "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=500",
+    "images": [
+      "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=500",
+      "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500",
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30e?w=500"
+    ],
+    "description": "Fitness tracking smartwatch with heart rate monitor and GPS.",
+    "stock": 18
+  },
+  {
+    "title": "Compact Bass Bluetooth Speaker",
+    "price": 35.5,
+    "category": "electronics",
+    "image": "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500",
+    "images": [
+      "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500",
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30e?w=500",
+      "https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=500"
+    ],
+    "description": "Waterproof portable speaker with deep bass and 12-hour playtime.",
+    "stock": 40
+  },
+  {
+    "title": "Men's Lightweight Performance Runners",
+    "price": 79.99,
+    "category": "fashion",
+    "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
+    "images": [
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500",
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500",
+      "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=500"
+    ],
+    "description": "Lightweight running shoes with breathable mesh and cushioned sole.",
+    "stock": 32
+  },
+  {
+    "title": "Women's Classic Blue Denim Jacket",
+    "price": 59.99,
+    "category": "fashion",
+    "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500",
+    "images": [
+      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500",
+      "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=500",
+      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500"
+    ],
+    "description": "Classic denim jacket, perfect for layering in any season.",
+    "stock": 22
+  },
+  {
+    "title": "Genuine Leather Everyday Crossbody",
+    "price": 89.0,
+    "category": "fashion",
+    "image": "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=500",
+    "images": [
+      "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=500",
+      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500",
+      "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500"
+    ],
+    "description": "Genuine leather crossbody bag with adjustable strap.",
+    "stock": 15
+  },
+  {
+    "title": "Modern Ceramic Planter Trio",
+    "price": 22.5,
+    "category": "home",
+    "image": "https://images.unsplash.com/photo-1584990347449-39b5b9bf67b6?w=500",
+    "images": [
+      "https://images.unsplash.com/photo-1584990347449-39b5b9bf67b6?w=500",
+      "https://images.unsplash.com/photo-1603006905003-be475563bc59?w=500",
+      "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=500"
+    ],
+    "description": "Set of 3 ceramic plant pots with drainage holes, various sizes.",
+    "stock": 45
+  },
+  {
+    "title": "Ergonomic Comfort Memory Pillow",
+    "price": 19.99,
+    "category": "home",
+    "image": "https://images.unsplash.com/photo-1603006905003-be475563bc59?w=500",
+    "images": [
+      "https://images.unsplash.com/photo-1603006905003-be475563bc59?w=500",
+      "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=500",
+      "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=500"
+    ],
+    "description": "Ergonomic memory foam pillow for better neck support.",
+    "stock": 60
+  },
+  {
+    "title": "Eco Grip Premium Yoga Mat",
+    "price": 29.99,
+    "category": "sports",
+    "image": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500",
+    "images": [
+      "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500",
+      "https://images.unsplash.com/photo-1638536532686-d610adfc8e5c?w=500",
+      "https://images.unsplash.com/photo-1557803175-2a59a9c1dd1f?w=500"
+    ],
+    "description": "Non-slip eco-friendly yoga mat with carrying strap.",
+    "stock": 35
+  },
+  {
+    "title": "Adjustable Home Strength Dumbbells",
+    "price": 119.99,
+    "category": "sports",
+    "image": "https://images.unsplash.com/photo-1638536532686-d610adfc8e5c?w=500",
+    "images": [
+      "https://images.unsplash.com/photo-1638536532686-d610adfc8e5c?w=500",
+      "https://images.unsplash.com/photo-1557803175-2a59a9c1dd1f?w=500",
+      "https://images.unsplash.com/photo-1592432678016-e910b452f9a2?w=500"
+    ],
+    "description": "Space-saving adjustable dumbbells, 5-25kg per hand.",
+    "stock": 12
+  }
+]

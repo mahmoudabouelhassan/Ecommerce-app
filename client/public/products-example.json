@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Example headphones",
+    "price": 49.99,
+    "category": "electronics",
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500",
+    "images": [
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800"
+    ],
+    "description": "Comfortable wireless headphones",
+    "badge": "New",
+    "stock": 12
+  },
+  {
+    "title": "Example sneakers",
+    "price": 69.99,
+    "discount": { "type": "percentage", "value": 20 },
+    "category": "fashion",
+    "description": "Lightweight everyday sneakers",
+    "stock": 8
+  }
+]

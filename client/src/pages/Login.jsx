@@ -27,6 +27,7 @@ function Login() {
         login({
           name: result.user.name,
           email: result.user.email,
+          role: result.user.role,
         }),
       );
       navigate("/");

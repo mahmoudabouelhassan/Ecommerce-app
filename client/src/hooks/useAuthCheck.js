@@ -12,11 +12,11 @@ const useAuthCheck = () => {
       try {
         const data = await getMe().unwrap();
         dispatch(login(data.user));
-      } catch (err) {
+      } catch {
         dispatch(logout());
       }
     })();
-  }, []);
+  }, [dispatch, getMe]);
 };
 
 export default useAuthCheck;

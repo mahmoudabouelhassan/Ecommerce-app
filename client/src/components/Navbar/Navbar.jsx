@@ -9,6 +9,7 @@ import {
   X,
   Sun,
   Moon,
+  LayoutDashboard,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/auth/authSlice";
@@ -16,6 +17,7 @@ import { clearCart } from "../../features/cart/cartSlice";
 import { clearWishlist } from "../../features/wishlist/wishlistSlice";
 import { useTheme } from "../../context/ThemeContext";
 import { useLogoutUserMutation } from "../../features/auth/authApiSlice";
+import { useGetPublicSettingsQuery, useGetAdminOverviewQuery } from "../../features/products/productsApiSlice";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -27,6 +29,9 @@ const Navbar = () => {
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [logoutUser] = useLogoutUserMutation();
+  const { data: storeSettings } = useGetPublicSettingsQuery();
+  const { data: adminOverview } = useGetAdminOverviewQuery(undefined, { skip: !isAuthenticated || user?.role !== "admin", pollingInterval: 60000, refetchOnFocus: true });
+  const adminAlerts = (adminOverview?.lowStockCount || 0) + (adminOverview?.outOfStockCount || 0) + (adminOverview?.stockIssueCount || 0);
   const handleLogout = async () => {
     navigate("/login");
     await logoutUser();
@@ -64,7 +69,7 @@ const Navbar = () => {
           style={{ color: "var(--text-primary)" }}
           className="text-xl font-bold"
         >
-          MyStore
+          {storeSettings?.storeName || "MyStore"}
         </NavLink>
 
         {/* Desktop Nav Links */}
@@ -89,6 +94,7 @@ const Navbar = () => {
           >
             Products
           </NavLink>
+          {isAuthenticated && user?.role === "admin" && <NavLink to="/admin" className={({ isActive }) => `flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition ${isActive ? "bg-blue-600 text-white" : "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20"}`}><LayoutDashboard size={18} />Admin Dashboard{adminAlerts > 0 && <span aria-label={`${adminAlerts} inventory or order alerts`} className="rounded-full bg-red-600 px-1.5 py-0.5 text-xs text-white">{adminAlerts}</span>}</NavLink>}
         </div>
 
         {/* Desktop Icons */}
@@ -165,6 +171,11 @@ const Navbar = () => {
                     >
                       My Profile
                     </NavLink>
+                    {user?.role === "admin" && (
+                      <NavLink to="/admin" onClick={() => setUserMenuOpen(false)} style={{ color: "var(--text-primary)" }} className="block px-4 py-3 text-sm hover:opacity-70">
+                        Admin Dashboard
+                      </NavLink>
+                    )}
                     <button
                       onClick={handleLogout}
                       className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors"
@@ -301,6 +312,11 @@ const Navbar = () => {
                 <User size={16} />
                 My Profile
               </NavLink>
+              {user?.role === "admin" && (
+                <NavLink to="/admin" onClick={closeMenu} className="flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-sm font-bold text-white">
+                  <LayoutDashboard size={16} />Admin Dashboard{adminAlerts > 0 && <span className="rounded-full bg-red-600 px-1.5 text-xs text-white">{adminAlerts}</span>}
+                </NavLink>
+              )}
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-1 text-red-500 text-sm font-semibold"

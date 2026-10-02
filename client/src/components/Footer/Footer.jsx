@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
+import { useGetPublicSettingsQuery } from "../../features/products/productsApiSlice";
 
 const Footer = () => {
+  const { data: settings } = useGetPublicSettingsQuery();
+  const storeName = settings?.storeName || "MyStore";
+  const supportEmail = settings?.supportEmail || "support@mystore.com";
   return (
     <footer
       className="  mt-auto"
@@ -18,7 +22,7 @@ const Footer = () => {
               color: "var(--text-primary)",
             }}
           >
-            MyStore
+            {storeName}
           </h3>
           <p style={{ color: "var(--text-secondary)" }} className="text-sm">
             Your one-stop shop for everything you need.
@@ -66,7 +70,7 @@ const Footer = () => {
             Contact
           </h4>
           <p style={{ color: "var(--text-secondary)" }} className="text-sm">
-            support@mystore.com
+            <a href={`mailto:${supportEmail}`} className="hover:text-blue-600">{supportEmail}</a>
           </p>
         </div>
       </div>
@@ -78,7 +82,7 @@ const Footer = () => {
         }}
         className="text-center text-sm py-2"
       >
-        © {new Date().getFullYear()} MyStore. All rights reserved.
+        © {new Date().getFullYear()} {storeName}. All rights reserved.
       </div>
       <div className="text-center text-sm pb-1 text-blue-700 font-bold">
         Created By Abdelmajeed

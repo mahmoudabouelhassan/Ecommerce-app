@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import ProductGrid from "../components/ProductGrid/ProductGrid";
 import { useGetProductsQuery } from "../features/products/productsApiSlice";
@@ -13,40 +13,49 @@ function Products() {
   const categoryFromUrl = searchParams.get("category") || "all";
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
   const [sortBy, setSortBy] = useState("default");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSelection, setPageSelection] = useState({ category: categoryFromUrl, page: 1 });
+  const currentPage = pageSelection.category === categoryFromUrl ? pageSelection.page : 1;
 
-  // لو المستخدم جاي من صفحة Home بفلتر فئة معينة، نطبقه هنا
-  useEffect(() => {
-    setSelectedCategory(categoryFromUrl);
-    setCurrentPage(1);
-  }, [categoryFromUrl]);
-
-  // لما اليوزر يغير الفئة يدوي من هنا، نحدث الـ URL كمان (عشان الـ link قابل للمشاركة)
+  // Keep the selected category in the URL so linked views stay in sync.
   const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    setCurrentPage(1);
+    setPageSelection({ category, page: 1 });
+    const nextParams = new URLSearchParams(searchParams);
     if (category === "all") {
-      searchParams.delete("category");
+      nextParams.delete("category");
     } else {
-      searchParams.set("category", category);
+      nextParams.set("category", category);
     }
-    setSearchParams(searchParams);
+    setSearchParams(nextParams);
   };
 
-  // أي تغيير في البحث أو الترتيب يرجعنا لصفحة 1 (منطقي إننا نبدأ من الأول)
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, sortBy]);
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    setPageSelection({ category: categoryFromUrl, page: 1 });
+  };
+  const handleSortChange = (value) => {
+    setSortBy(value);
+    setPageSelection({ category: categoryFromUrl, page: 1 });
+  };
 
   const { data, error, isLoading } = useGetProductsQuery({
-    category: selectedCategory,
+    category: categoryFromUrl,
     search: searchTerm,
     page: currentPage,
     limit: PRODUCTS_PER_PAGE,
     sort: sortBy,
   });
+
+  const handlePageChange = (page) => {
+    if (page === currentPage) return;
+    setPageSelection({ category: categoryFromUrl, page });
+    window.scrollTo({
+      top: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  };
 
   if (isLoading)
     return (
@@ -65,18 +74,18 @@ function Products() {
       className="max-w-6xl mx-auto px-4 py-8 min-h-screen"
       style={{ background: "var(--bg-primary)" }}
     >
-      <SearchBar onSearch={setSearchTerm} />
+      <SearchBar onSearch={handleSearch} />
       <Filters
-        selectedCategory={selectedCategory}
+        selectedCategory={categoryFromUrl}
         onCategoryChange={handleCategoryChange}
         sortBy={sortBy}
-        onSortChange={setSortBy}
+        onSortChange={handleSortChange}
       />
       <ProductGrid products={data?.products || []} />
       <Pagination
         currentPage={data?.currentPage || 1}
         totalPages={data?.totalPages || 1}
-        onPageChange={setCurrentPage}
+        onPageChange={handlePageChange}
       />
     </div>
   );

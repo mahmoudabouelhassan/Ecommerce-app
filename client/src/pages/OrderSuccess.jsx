@@ -1,61 +1,47 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { CheckCircle, LoaderCircle } from "lucide-react";
 import { clearCart } from "../features/cart/cartSlice";
-import { CheckCircle } from "lucide-react";
-import { productsApiSlice } from "../features/products/productsApiSlice";
+import { productsApiSlice, useGetMyOrdersQuery } from "../features/products/productsApiSlice";
 
 function OrderSuccess() {
+  const [params] = useSearchParams();
+  const sessionId = params.get("session_id");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { data: orders = [], isLoading, isError, refetch } = useGetMyOrdersQuery(undefined, { skip: !sessionId, pollingInterval: 3000 });
+  const order = orders.find((item) => item.stripeSessionId === sessionId && item.paymentMethod === "card");
+  const isPaid = order?.paymentStatus === "paid";
+  const needsStockReview = order?.status === "stock_issue";
 
-  //  الكارت بيتصفى هنا بس، بعد ما اليوزر رجع من صفحة الدفع الناجحة فعلياً
-  // مش في Checkout.jsx وقت الضغط على الزرار
   useEffect(() => {
-    dispatch(clearCart());
-    dispatch(productsApiSlice.util.invalidateTags(["Product"]));
-  }, [dispatch]);
+    if (isPaid) {
+      dispatch(clearCart());
+      dispatch(productsApiSlice.util.invalidateTags(["Product"]));
+    }
+  }, [dispatch, isPaid]);
 
   return (
-    <div
-      style={{ background: "var(--bg-primary)" }}
-      className="flex justify-center items-center min-h-screen"
-    >
-      <div className="flex flex-col items-center gap-6 text-center px-4">
-        <CheckCircle className="w-20 h-20 text-green-500" />
-        <h1
-          style={{ color: "var(--text-primary)" }}
-          className="text-4xl font-extrabold"
-        >
-          Payment Successful!
+    <main className="flex min-h-[70vh] items-center justify-center px-4 py-12" style={{ background: "var(--bg-primary)" }}>
+      <div className="w-full max-w-xl rounded-3xl border p-8 text-center shadow-sm" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
+        {isPaid ? <CheckCircle className="mx-auto mb-5 text-green-500" size={64} aria-hidden="true" /> : <LoaderCircle className="mx-auto mb-5 animate-spin text-blue-600" size={56} aria-hidden="true" />}
+        <h1 className="text-3xl font-bold" style={{ color: "var(--text-primary)" }}>
+          {isPaid ? needsStockReview ? "Payment received — stock review needed" : "Payment confirmed" : "Checking your payment"}
         </h1>
-        <p
-          style={{ color: "var(--text-secondary)" }}
-          className="text-lg max-w-md"
-        >
-          Thank you for your order! We've received your payment and your order
-          is being processed.
+        <p className="mt-3" style={{ color: "var(--text-secondary)" }}>
+          {isPaid ? needsStockReview ? "Your card payment was received, but the order needs a stock review. Please contact the store." : "Your card payment is confirmed and your order is being processed." :
+            isError ? "We couldn't check the order right now. Your payment may still be processing." :
+              !sessionId ? "The checkout session was not found. Check your order history for the latest status." :
+                isLoading ? "Loading your order..." : "Stripe is finishing payment confirmation. This page checks automatically every few seconds."}
         </p>
-        <div className="flex gap-4">
-          <button
-            onClick={() => navigate("/")}
-            className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold rounded-2xl transition-all active:scale-95"
-          >
-            Continue Shopping
-          </button>
-          <button
-            onClick={() => navigate("/profile")}
-            style={{
-              borderColor: "var(--border-color)",
-              color: "var(--text-primary)",
-            }}
-            className="px-8 py-3 border text-lg font-bold rounded-2xl transition-all active:scale-95"
-          >
-            View My Orders
-          </button>
+        {order && <p className="mt-4 break-all text-sm" style={{ color: "var(--text-secondary)" }}>Order #{order._id}</p>}
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          {isError && <button type="button" onClick={refetch} className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white">Try again</button>}
+          <Link to="/profile" className="rounded-xl border px-5 py-3 font-semibold" style={{ borderColor: "var(--border-color)", color: "var(--text-primary)" }}>View my orders</Link>
+          {isPaid && <Link to="/" className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white">Continue shopping</Link>}
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 

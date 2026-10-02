@@ -4,8 +4,10 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <div className="flex justify-center items-center gap-2 mt-10 flex-wrap">
+    <nav aria-label="Product pages" className="flex justify-center items-center gap-2 mt-10 flex-wrap">
       <button
+        type="button"
+        aria-label="Previous page"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         style={{
@@ -20,7 +22,10 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
 
       {pages.map((page) => (
         <button
+          type="button"
           key={page}
+          aria-label={`Page ${page}`}
+          aria-current={page === currentPage ? "page" : undefined}
           onClick={() => onPageChange(page)}
           style={
             page === currentPage
@@ -42,6 +47,8 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
       ))}
 
       <button
+        type="button"
+        aria-label="Next page"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         style={{
@@ -53,7 +60,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
       >
         Next
       </button>
-    </div>
+    </nav>
   );
 }
 

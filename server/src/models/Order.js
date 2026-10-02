@@ -35,21 +35,26 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "processing", "shipped", "delivered"],
+      enum: ["pending", "processing", "shipped", "delivered", "cancelled", "stock_issue"],
       default: "pending",
     },
-    // status بيتحكم فيه الأدمن لاحقاً (لسه بيجهز الطلب، شحنه، وصل)
-    // paymentStatus بيتحكم فيه Stripe وحده عن طريق الـ webhook
+    paymentMethod: {
+      type: String,
+      enum: ["card", "cash_on_delivery"],
+      default: "card",
+      required: true,
+    },
+    // Card payments are settled by the Stripe webhook; COD is settled by an admin.
     paymentStatus: {
       type: String,
       enum: ["unpaid", "paid", "failed"],
       default: "unpaid",
     },
-    //  جديد: بنخزن هنا الـ ID بتاع جلسة الدفع في Stripe
-    // ده اللي بيربط بين الطلب في قاعدة بياناتنا والدفع الفعلي عند Stripe
     stripeSessionId: {
       type: String,
     },
+    paidAt: Date,
+    collectedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   {
     timestamps: true,
